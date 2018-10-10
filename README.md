@@ -14,4 +14,4 @@ Your challenge is to build a basic, yet interactive, savings calculator using Ja
 * Interest Rate
 * Graphs showing compounded savings
 
-
+![](sample.png?raw=true)
