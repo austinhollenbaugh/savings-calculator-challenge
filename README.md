@@ -30,7 +30,7 @@ Write your application in JavaScript. You're encouraged to build a "reactive" so
 
 ### Tips
 
-Emphasize correctness and completeness over aesthetics. Do not feel compelled to match Banzai's designs—simply use them as examples for functionality. Write as much of the calculations and logic of the calculator in JavaScript, however, consider using a charting library for the graph.
+Emphasize correctness and completeness over aesthetics. Do not feel compelled to match Banzai's designs, nor UI controls—simply use them as examples for functionality. Write as much of the calculations and logic of the calculator in JavaScript, however, consider using a charting library for the graph. The sample image above has ideas for the UI, however, don't feel compelled to match them—do your best with the time you have.
 
 **NOTE ON COMPOUND INTEREST:** The formula for calculating compound interest can be calculated monthly, annually, quarterly, and so on. Keep it simple and use monthly.
 
