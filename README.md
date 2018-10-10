@@ -8,10 +8,10 @@ Build a savings calculator in JavaScript.
 
 Your challenge is to build a basic, yet interactive, savings calculator using JavaScript. The purpose of a savings calculator is to help an individual see how money, invested over time, at an interest rate, added to monthly, grows exponentially. Simply Google "savings calculator" to find countless examples. For your challenge, ask the user for these inputs:
 
-* Starting Amount
-* Monthly Savings
-* Years to Save
-* Interest Rate
+* Starting amount
+* Monthly savings
+* Years to save
+* Interest rate
 
 The outputs of the calculator should be the following:
 
@@ -31,6 +31,8 @@ Write your application in JavaScript. You're encouraged to build a "reactive" so
 ### Tips
 
 Emphasize correctness and completeness over aesthetics. Do not feel compelled to match Banzai's designs—simply use them as examples for functionality. Write as much of the calculations and logic of the calculator in JavaScript, however, consider using a charting library for the graph.
+
+**NOTE ON COMPOUND INTEREST:** The formula for calculating compound interest can be calculated monthly, annually, quarterly, and so on. Keep it simple and use monthly.
 
 The code you produce may be used on a real website. You will, therefore, be paid $100.00 for a _working_ solution, whether or not it's chosen.
 
