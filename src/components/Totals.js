@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import Total from "./Total";
-import "../styles/Totals.css";
 
 class Totals extends Component {
   render() {

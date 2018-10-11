@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-// import "../styles/Totals.css";
 
 class Total extends Component {
   // this will take props for the amount and the title

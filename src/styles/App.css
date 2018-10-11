@@ -27,6 +27,11 @@
   display: flex;
 }
 
+.text-input-wrapper {
+  display: flex;
+  justify-content: space-around;
+}
+
 .Title {
   min-height: 10vh;
   display: flex;

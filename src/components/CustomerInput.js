@@ -1,34 +1,18 @@
 import React, { Component } from "react";
-import "../styles/CustomerInput.css";
 import Slider from "./Slider";
+import TextInput from "./TextInput";
+import "../styles/CustomerInput.css";
 
 class CustomerInput extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      amount: ''
-    };
-  }
-
-  handleChange(e) {
-    this.setState({ amount: e.target.value });
-    console.log("AMOUNT:", this.state.amount);
-  }
-
   render() {
     return (
       <div className="CustomerInput">
-        <div className="amount-wrapper">
-          <p>{this.props.text}</p>
-          <input
-            value={this.state.amount}
-            onChange={e => this.handleChange(e)}
-            placeholder="put in a number!"
-            type="number"
-          />
-        </div>
-        {/* make the above a separate component? */}
-        <Slider amount={this.state.amount} />
+        <TextInput
+          text={this.props.text}
+          amount={this.props.amount}
+          onChange={this.props.onChange}
+        />
+        <Slider amount={this.props.amount} onChange={this.props.onChange}/>
       </div>
     );
   }
