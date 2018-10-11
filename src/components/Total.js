@@ -5,8 +5,8 @@ class Total extends Component {
   render() {
     return (
       <div className="Total">
-        <div>$100000</div>
-        <div>Total Amount Saved</div>
+        <div>{this.props.amount}</div>
+        <div>{this.props.text}</div>
       </div>
     );
   }

@@ -7,10 +7,11 @@ class TextInput extends Component {
         <div className="text-input-wrapper">
           <p>{this.props.text}</p>
           <input
-            value={this.props.amount}
+            value={this.props.val}
             onChange={this.props.onChange}
             placeholder="put in a number!"
             type="number"
+            min="0"
           />
         </div>
       </div>
