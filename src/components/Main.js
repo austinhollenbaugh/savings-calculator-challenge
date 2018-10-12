@@ -8,39 +8,41 @@ class Main extends Component {
     super(props);
     this.state = {
       // Just the 4 values we're receiving from the inputs
-      inputValues: Array(4).fill(0) // maybe want to set these to zero instead
+      inputValues: Array(4).fill(0)
     };
   }
 
   handleChange(i, e) {
     const inputValues = this.state.inputValues.slice(); // so we dont mutate
-    inputValues[i] = e.target.value;
+    inputValues[i] = parseInt(e.target.value); 
     this.setState({ inputValues });
   }
 
-  totalSaved(valuesArr) {
-    const principal = valuesArr[0];
-    const monthlyPayment = valuesArr[1];
-    const timeInYears = valuesArr[2];
-    const interestRate = valuesArr[3] / 100;
+  totalSaved(values) {
+    const principal = values[0];
+    const monthlyPayment = values[1];
+    const timeInYears = values[2];
+    const interestRate = values[3] / 100;
 
-    if (interestRate === 0) return 0;
-    // if this goes into futureValueOfASeries as 0 it will return NaN
+    // setting these to the class may be frowned upon, I need to check on that.
+    this.principalOnly =
+      this.compoundInterestForPrincipal(principal, interestRate, timeInYears);
 
-    const totalSaved = (
-        this.compoundInterestForPrincipal(principal, interestRate, timeInYears) + this.futureValueOfASeries(monthlyPayment, interestRate, timeInYears)
-      ).toFixed(2);
+    this.seriesOfPayments =
+      this.futureValueOfASeries(monthlyPayment, interestRate, timeInYears);
 
-    return totalSaved;
+    return (this.principalOnly + this.seriesOfPayments).toFixed(2);
   }
 
   compoundInterestForPrincipal(p, r, t) {
-    // console.log(p * (Math.pow((1 + r / 12), (12 * t))));
-    // this is returning zero
+    if (r === 0) return p;
+
     return p * Math.pow((1 + r / 12), (12 * t));
   }
 
   futureValueOfASeries(payment, r, t) {
+    if (r === 0) return payment * (t * 12);
+
     return payment * ((Math.pow((1 + (r / 12)), (12 * t)) - 1) / (r / 12));
   }
 
@@ -48,11 +50,21 @@ class Main extends Component {
   // [ P(1+r/n)^(nt) ] + [ PMT × (((1 + r/n)^(nt) - 1) / (r/n)) ]
   // https://www.thecalculatorsite.com/articles/finance/compound-interest-formula.php?page=2
 
-  interestEarned(valuesArr) {
-    // some formula
-    // take the values I got up there, and just subtract out the money we put in
+  // tested using https://www.investor.gov/additional-resources/free-financial-planning-tools/compound-interest-calculator
 
-    return 500;
+  interestEarned(values) {
+    const principal = values[0];
+    const monthlyPayment = values[1];
+    const timeInYears = values[2];
+    const interestRate = values[3] / 100;
+
+    if (interestRate === 0) return (0).toFixed(2);
+
+    // take the values I got up there, and just subtract out the money put in
+    const principalInterest = (this.principalOnly - principal); // divide? or subtract?
+    const paymentInterest = (this.seriesOfPayments - (monthlyPayment * (timeInYears * 12)));
+
+    return (principalInterest + paymentInterest).toFixed(2);
   }
 
   render() {
@@ -60,7 +72,7 @@ class Main extends Component {
       <div className="Main">
         <div className="main-wrapper">
           <Sidebar
-            inputValues={this.state.inputValues}
+            values={this.state.inputValues}
             onChange={(i, e) => this.handleChange(i, e)}
           />
           <Graph />
