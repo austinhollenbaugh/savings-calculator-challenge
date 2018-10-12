@@ -14,28 +14,48 @@ class Main extends Component {
 
   handleChange(i, e) {
     const inputValues = this.state.inputValues.slice(); // so we dont mutate
-    inputValues[i] = parseInt(e.target.value); 
+    inputValues[i] = parseInt(e.target.value);
     this.setState({ inputValues });
   }
 
-  totalSaved(values) {
+  totalSaved(values, t) {
     const principal = values[0];
     const monthlyPayment = values[1];
-    const timeInYears = values[2];
+    const timeInYears = t ? t : t === 0 ? t : values[2];
     const interestRate = values[3] / 100;
 
-    // setting these to the class may be frowned upon, I need to check on that.
-    this.principalOnly =
+    const principalOnly =
       this.compoundInterestForPrincipal(principal, interestRate, timeInYears);
 
-    this.seriesOfPayments =
+    const seriesOfPayments =
       this.futureValueOfASeries(monthlyPayment, interestRate, timeInYears);
 
-    return (this.principalOnly + this.seriesOfPayments).toFixed(2);
+    return (principalOnly + seriesOfPayments).toFixed(2); // string
+  }
+
+  totalInterestEarned(values, t) {
+    const principal = values[0];
+    const monthlyPayment = values[1];
+    const timeInYears = t ? t : t === 0 ? t : values[2];
+    const interestRate = values[3] / 100;
+
+    if (interestRate === 0) return (0).toFixed(2);
+
+    const principalOnly =
+      this.compoundInterestForPrincipal(principal, interestRate, timeInYears);
+
+    const seriesOfPayments =
+      this.futureValueOfASeries(monthlyPayment, interestRate, timeInYears);
+
+    // take the values I got up there, and just subtract out the money put in
+    const principalInterest = (principalOnly - principal);
+    const paymentInterest = (seriesOfPayments - (monthlyPayment * (timeInYears * 12)));
+
+    return (principalInterest + paymentInterest).toFixed(2); // string
   }
 
   compoundInterestForPrincipal(p, r, t) {
-    if (r === 0) return p;
+    if (r === 0) return p; // replace with a ternary?
 
     return p * Math.pow((1 + r / 12), (12 * t));
   }
@@ -52,20 +72,21 @@ class Main extends Component {
 
   // tested using https://www.investor.gov/additional-resources/free-financial-planning-tools/compound-interest-calculator
 
-  interestEarned(values) {
-    const principal = values[0];
-    const monthlyPayment = values[1];
-    const timeInYears = values[2];
-    const interestRate = values[3] / 100;
-
-    if (interestRate === 0) return (0).toFixed(2);
-
-    // take the values I got up there, and just subtract out the money put in
-    const principalInterest = (this.principalOnly - principal); // divide? or subtract?
-    const paymentInterest = (this.seriesOfPayments - (monthlyPayment * (timeInYears * 12)));
-
-    return (principalInterest + paymentInterest).toFixed(2);
+  yearlySavings(values) {
+    let savingsEachYear = [];
+    for (let i = 0; i <= values[2]; i++) {
+      savingsEachYear.push(this.totalSaved(values, i));
+    }
+    return savingsEachYear;
   }
+
+  yearlySavingsWithoutInterest(values) {
+    let savingsEachYearWithoutInterest = [];
+    for (let i = 0; i <= values[2]; i++) {
+      savingsEachYearWithoutInterest.push(this.totalSaved(values, i) - this.totalInterestEarned(values, i));
+    }
+    return savingsEachYearWithoutInterest;
+  };
 
   render() {
     return (
@@ -75,11 +96,15 @@ class Main extends Component {
             values={this.state.inputValues}
             onChange={(i, e) => this.handleChange(i, e)}
           />
-          <Graph />
+          <Graph
+            values={this.state.inputValues}
+            savings={this.yearlySavings(this.state.inputValues)}
+            withoutInterest={this.yearlySavingsWithoutInterest(this.state.inputValues)}
+          />
         </div>
         <Totals
           saved={this.totalSaved(this.state.inputValues)}
-          interest={this.interestEarned(this.state.inputValues)}
+          interest={this.totalInterestEarned(this.state.inputValues)}
         />
       </div>
     );
