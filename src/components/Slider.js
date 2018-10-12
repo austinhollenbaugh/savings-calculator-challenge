@@ -8,8 +8,8 @@ class Slider extends Component {
       <div className="Slider">
         <input
           type="range"
-          min="0"
-          max="10000"
+          min={this.props.options.min}
+          max={this.props.options.max}
           value={this.props.val}
           onChange={this.props.onChange}
         />

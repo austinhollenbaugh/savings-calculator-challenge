@@ -8,11 +8,15 @@ class CustomerInput extends Component {
     return (
       <div className="CustomerInput">
         <TextInput
-          text={this.props.text}
+          options={this.props.options}
           val={this.props.val}
           onChange={this.props.onChange}
         />
-        <Slider val={this.props.val} onChange={this.props.onChange}/>
+        <Slider
+          val={this.props.val}
+          onChange={this.props.onChange}
+          options={this.props.options}
+        />
         {/* should also pass in min and max as props to this */}
       </div>
     );

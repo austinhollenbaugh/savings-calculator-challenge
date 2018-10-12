@@ -1,76 +1,76 @@
 import React, { Component } from "react";
 import Sidebar from "./Sidebar";
-import Title from "./Title";
 import Totals from "./Totals";
-import CustomerInput from "./CustomerInput";
 import Graph from "./Graph";
 
 class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      inputs: [
-        {
-          text: "Starting Amount",
-          value: ''
-        },
-        {
-          text: "Amount to Save Each Month",
-          value: ''
-        },
-        {
-          text: "Years to Save",
-          value: ''
-        },
-        {
-          text: "Interest Rate",
-          value: ''
-        },
-      ],
-      totalSaved: 1000,
-      interestEarned: 5
+      // Just the 4 values we're receiving from the inputs
+      inputValues: Array(4).fill(0) // maybe want to set these to zero instead
     };
   }
 
   handleChange(i, e) {
-    const inputs = this.state.inputs.slice(); // don't mutate the data
-    inputs[i].value = e.target.value;
-    this.setState({ inputs: inputs });
-    console.log("AMOUNT:", inputs[i].value);
-
-    // as the values change, we'll have to do math, and that will have to be started in here, depending on what the change was.
+    const inputValues = this.state.inputValues.slice(); // so we dont mutate
+    inputValues[i] = e.target.value;
+    this.setState({ inputValues });
   }
 
-  renderInputComponents(inputArray) {
-    return inputArray.map(({ text, value }, i) => {
-      return (
-        <CustomerInput
-          text={text}
-          val={value}
-          onChange={e => this.handleChange(i, e)}
-          key={text}
-        />
-      )
-    })
+  totalSaved(valuesArr) {
+    const principal = valuesArr[0];
+    const monthlyPayment = valuesArr[1];
+    const timeInYears = valuesArr[2];
+    const interestRate = valuesArr[3] / 100;
+
+    if (interestRate === 0) return 0;
+    // if this goes into futureValueOfASeries as 0 it will return NaN
+
+    const totalSaved = (
+        this.compoundInterestForPrincipal(principal, interestRate, timeInYears) + this.futureValueOfASeries(monthlyPayment, interestRate, timeInYears)
+      ).toFixed(2);
+
+    return totalSaved;
+  }
+
+  compoundInterestForPrincipal(p, r, t) {
+    // console.log(p * (Math.pow((1 + r / 12), (12 * t))));
+    // this is returning zero
+    return p * Math.pow((1 + r / 12), (12 * t));
+  }
+
+  futureValueOfASeries(payment, r, t) {
+    return payment * ((Math.pow((1 + (r / 12)), (12 * t)) - 1) / (r / 12));
+  }
+
+  // based off this formula:
+  // [ P(1+r/n)^(nt) ] + [ PMT × (((1 + r/n)^(nt) - 1) / (r/n)) ]
+  // https://www.thecalculatorsite.com/articles/finance/compound-interest-formula.php?page=2
+
+  interestEarned(valuesArr) {
+    // some formula
+    // take the values I got up there, and just subtract out the money we put in
+
+    return 500;
   }
 
   render() {
     return (
       <div className="Main">
-        <Title />
         <div className="main-wrapper">
           <Sidebar
-            inputs={this.renderInputComponents(this.state.inputs)}
-            onChange={e => this.handleChange(e)}
+            inputValues={this.state.inputValues}
+            onChange={(i, e) => this.handleChange(i, e)}
           />
           <Graph />
         </div>
-      <Totals
-        saved={this.state.totalSaved}
-        interest={this.state.interestEarned}
-      />
-    </div>
-  );
+        <Totals
+          saved={this.totalSaved(this.state.inputValues)}
+          interest={this.interestEarned(this.state.inputValues)}
+        />
+      </div>
+    );
   }
 }
 
