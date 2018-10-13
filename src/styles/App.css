@@ -2,47 +2,22 @@
   text-align: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
+.Title {
+  height: 10vh;
 }
 
-.chart-wrapper {
-  /* background-color: #282c34; */
-  min-height: 70vh;
-  width: 70vw;
-  /* display: flex;
-  align-items: center;
-  justify-content: center; */
-  /* font-size: calc(10px + 2vmin); */
-  /* color: white; */
+h1 {
+  letter-spacing: 3px;
+  font-weight: normal;
 }
 
-.App-link {
-  color: #61dafb;
+h5 {
+  letter-spacing: 1px;
+  font-weight: normal;
 }
 
 .main-wrapper {
   display: flex;
-}
-
-.text-input-wrapper {
-  display: flex;
-  justify-content: space-around;
-}
-
-.Title {
-  min-height: 10vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.Totals {
-  min-height: 20vh;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
 }
 
 .Sidebar {
@@ -53,11 +28,69 @@
   justify-content: space-around;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.CustomerInput {
+  width: 80%;
+}
+
+.TextInput {
+  /* padding: 20px; */
+  display: flex;
+  justify-content: space-between;
+}
+
+.input-descriptor {
+  font-size: 18px;
+}
+
+.range-input {
+  width: 100%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background: transparent;
+}
+
+.number-input {
+  height: 30px;
+  width: 40%;
+  border: none;
+  padding-bottom: 5px;
+  font-size: 18px;
+  background: transparent;
+  border-bottom: 1px solid black;
+}
+
+.number-input:focus {
+  outline: none;
+}
+
+.chart-wrapper {
+  /* background-color: #282c34; */
+  min-height: 70vh;
+  width: 70vw;
+  position: relative;
+  /* display: flex;
+  align-items: center;
+  justify-content: center; */
+}
+
+.Totals {
+  min-height: 20vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Total {
+  margin: 50px;
+}
+
+.total-title {
+  margin: 10px;
+  letter-spacing: 1px;
+  font-size: 20px;
+}
+
+.total-amount {
+  letter-spacing: 2px;
+  font-size: 30px;
 }

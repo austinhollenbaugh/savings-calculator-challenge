@@ -11,39 +11,89 @@ class Graph extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.values !== this.props.values) {
-      this.chart.data.labels = this.scale(this.props.values[2]);
-      this.chart.data.datasets[0].data = this.props.savings;
-      this.chart.data.datasets[1].data = this.props.withoutInterest;
-      this.chart.update(0) // 0 avoids animation and updates synchronously
+    const { values, savings, withoutInterest } = this.props;
+    const { chart, scale } = this;
+    if (prevProps.values !== values) {
+      chart.data.labels = scale(values[2]);
+      chart.data.datasets[0].data = savings;
+      chart.data.datasets[1].data = withoutInterest;
+      chart.update()
     }
   }
 
   componentDidMount() {
-    this.chart = new Chart(this.node, {
+    var canvas = document.getElementById("test");
+    var parent = document.getElementById("parent");
+    canvas.width = parent.offsetWidth;
+    canvas.height = parent.offsetHeight;
+    // these are working but I want to find a better way to do it
+
+    const { node, scale } = this;
+    const { values, savings, withoutInterest } = this.props;
+
+    this.chart = new Chart(node, {
+      // The type of chart we want to create
       type: "line",
+
+      // The data for our dataset
       data: {
-        labels: this.scale(this.props.values[2]), // along the bottom
+        labels: scale(values[2]), // along the bottom
         datasets: [
           {
             label: "Savings",
+            borderColor: "#FF7D51",
+            pointBackgroundColor: "#FF7D51",
+            fill: false,
             lineTension: 0,
-            data: this.props.savings // points to plot
+            data: savings // points to plot
           },
           {
             label: "Without Interest",
+            borderColor: "#3586A2",
+            pointBackgroundColor: "#3586A2",
+            fill: false,
+            // backgroundColor: ""
             lineTension: 0,
-            data: this.props.withoutInterest
+            data: withoutInterest
           }
-        ],
+        ]
+      },
+
+      // Configuration options go here
+      options: {
+        legend: {
+          usePointStyle: true
+        },
+        scales: {
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: "Savings"
+            },
+            ticks: {
+              min: 0,
+              // Include a dollar sign in the ticks
+              callback: function(value, index, values) {
+                  return '$' + value;
+              }
+            }
+          }],
+          xAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: "Years"
+            },
+          }]
+        }
       }
     });
   }
+
   render() {
     return (
       <div className="Graph">
-        <header className="chart-wrapper">
-          <canvas ref={node => (this.node = node)}></canvas>
+        <header id="parent" className="chart-wrapper">
+          <canvas id="test" ref={node => (this.node = node)}></canvas>
         </header>
       </div>
     );

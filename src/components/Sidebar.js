@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import CustomerInput from "./CustomerInput";
-import "../styles/Sidebar.css";
 
 class Sidebar extends Component {
 
@@ -8,21 +7,25 @@ class Sidebar extends Component {
     const options = [
       {
         text: 'Starting Amount',
+        type: "$",
         min: 0,
         max: 10000
       },
       {
         text: 'Save Each Month',
+        type: "$",
         min: 0,
         max: 1000
       },
       {
         text: 'Years to Save',
+        type: "num",
         min: 0,
         max: 50
       },
       {
         text: 'Interest Rate',
+        type: "%",
         min: 0,
         max: 20
       }

@@ -1,23 +1,22 @@
 import React, { Component } from "react";
 import Slider from "./Slider";
 import TextInput from "./TextInput";
-import "../styles/CustomerInput.css";
 
 class CustomerInput extends Component {
   render() {
+    const { val, onChange, options } = this.props;
     return (
       <div className="CustomerInput">
         <TextInput
-          options={this.props.options}
-          val={this.props.val}
-          onChange={this.props.onChange}
+          options={options}
+          val={val}
+          onChange={onChange}
         />
         <Slider
-          val={this.props.val}
-          onChange={this.props.onChange}
-          options={this.props.options}
+          val={val}
+          onChange={onChange}
+          options={options}
         />
-        {/* should also pass in min and max as props to this */}
       </div>
     );
   }

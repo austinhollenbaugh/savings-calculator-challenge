@@ -89,22 +89,23 @@ class Main extends Component {
   };
 
   render() {
+    const { inputValues } = this.state;
     return (
       <div className="Main">
         <div className="main-wrapper">
           <Sidebar
-            values={this.state.inputValues}
+            values={inputValues}
             onChange={(i, e) => this.handleChange(i, e)}
           />
           <Graph
-            values={this.state.inputValues}
-            savings={this.yearlySavings(this.state.inputValues)}
-            withoutInterest={this.yearlySavingsWithoutInterest(this.state.inputValues)}
+            values={inputValues}
+            savings={this.yearlySavings(inputValues)}
+            withoutInterest={this.yearlySavingsWithoutInterest(inputValues)}
           />
         </div>
         <Totals
-          saved={this.totalSaved(this.state.inputValues)}
-          interest={this.totalInterestEarned(this.state.inputValues)}
+          saved={this.totalSaved(inputValues)}
+          interest={this.totalInterestEarned(inputValues)}
         />
       </div>
     );

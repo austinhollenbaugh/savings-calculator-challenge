@@ -2,16 +2,16 @@ import React, { Component } from "react";
 
 class Slider extends Component {
   render() {
-    // i might consider setting the min and maxes on these sliders to a range based on their initial inputs
-    // what happens if they want to use the slider first though?
+    const { val, onChange, options } = this.props;
     return (
       <div className="Slider">
         <input
+          className="range-input"
           type="range"
-          min={this.props.options.min}
-          max={this.props.options.max}
-          value={this.props.val}
-          onChange={this.props.onChange}
+          min={options.min}
+          max={options.max}
+          value={val}
+          onChange={onChange}
         />
       </div>
     );

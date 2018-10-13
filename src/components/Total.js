@@ -2,10 +2,11 @@ import React, { Component } from "react";
 
 class Total extends Component {
   render() {
+    const { amount, text } = this.props;
     return (
       <div className="Total">
-        <div>${this.props.amount}</div>
-        <div>{this.props.text}</div>
+        <div className="total-amount">${amount}</div>
+        <div className="total-title">{text}</div>
       </div>
     );
   }
