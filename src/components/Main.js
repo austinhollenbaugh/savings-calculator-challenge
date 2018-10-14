@@ -10,60 +10,39 @@ class Main extends Component {
       // Just the 4 values we're receiving from the inputs
       inputValues: Array(4).fill(0)
     };
+
+    this.principal = this.state.inputValues[0];
+    this.monthlyPayment = this.state.inputValues[1];
+    this.timeInYears = this.state.inputValues[2];
+    this.interestRate = this.state.inputValues[3] / 100;
   }
 
   handleChange(i, e) {
     const inputValues = this.state.inputValues.slice(); // so we dont mutate
     inputValues[i] = parseInt(e.target.value);
     this.setState({ inputValues });
+
+    this.principal = inputValues[0];
+    this.monthlyPayment = inputValues[1];
+    this.timeInYears = inputValues[2];
+    this.interestRate = inputValues[3] / 100;
   }
 
-  totalSaved(values, t) {
-    const principal = values[0];
-    const monthlyPayment = values[1];
-    const timeInYears = t ? t : t === 0 ? t : values[2];
-    const interestRate = values[3] / 100;
+  totalSavedPrincipal(years) {
+    const rate = this.interestRate;
+    const prin = this.principal;
+    if (rate === 0) return prin;
 
-    const principalOnly =
-      this.compoundInterestForPrincipal(principal, interestRate, timeInYears);
-
-    const seriesOfPayments =
-      this.futureValueOfASeries(monthlyPayment, interestRate, timeInYears);
-
-    return (principalOnly + seriesOfPayments).toFixed(2); // string
+    return prin * Math.pow(1 + rate / 12, 12 * years);
   }
 
-  totalInterestEarned(values, t) {
-    const principal = values[0];
-    const monthlyPayment = values[1];
-    const timeInYears = t ? t : t === 0 ? t : values[2];
-    const interestRate = values[3] / 100;
+  // should i leave the if on the above so these two match?
+  totalSavedPayments(years) {
+    const rate = this.interestRate;
+    const payment = this.monthlyPayment;
+    if (rate === 0) return payment * (years * 12);
 
-    if (interestRate === 0) return (0).toFixed(2);
-
-    const principalOnly =
-      this.compoundInterestForPrincipal(principal, interestRate, timeInYears);
-
-    const seriesOfPayments =
-      this.futureValueOfASeries(monthlyPayment, interestRate, timeInYears);
-
-    // take the values I got up there, and just subtract out the money put in
-    const principalInterest = (principalOnly - principal);
-    const paymentInterest = (seriesOfPayments - (monthlyPayment * (timeInYears * 12)));
-
-    return (principalInterest + paymentInterest).toFixed(2); // string
-  }
-
-  compoundInterestForPrincipal(p, r, t) {
-    if (r === 0) return p; // replace with a ternary?
-
-    return p * Math.pow((1 + r / 12), (12 * t));
-  }
-
-  futureValueOfASeries(payment, r, t) {
-    if (r === 0) return payment * (t * 12);
-
-    return payment * ((Math.pow((1 + (r / 12)), (12 * t)) - 1) / (r / 12));
+    return payment * ((Math.pow(1 + rate / 12, 12 * years) - 1) / (rate / 12));
   }
 
   // based off this formula:
@@ -72,40 +51,61 @@ class Main extends Component {
 
   // tested using https://www.investor.gov/additional-resources/free-financial-planning-tools/compound-interest-calculator
 
-  yearlySavings(values) {
-    let savingsEachYear = [];
-    for (let i = 0; i <= values[2]; i++) {
-      savingsEachYear.push(this.totalSaved(values, i));
-    }
-    return savingsEachYear;
+  totalInterestOnPrincipal(years) {
+    return this.totalSavedPrincipal(years) - this.principal;
   }
 
-  yearlySavingsWithoutInterest(values) {
-    let savingsEachYearWithoutInterest = [];
-    for (let i = 0; i <= values[2]; i++) {
-      savingsEachYearWithoutInterest.push(this.totalSaved(values, i) - this.totalInterestEarned(values, i));
+  totalInterestOnPayments(years) {
+    const months = years * 12;
+    return this.totalSavedPayments(years) - this.monthlyPayment * months;
+  }
+
+  sumTotalInterest(years) {
+    return (
+      this.totalInterestOnPrincipal(years) + this.totalInterestOnPayments(years)
+    );
+  }
+
+  savingsWithoutInterest(years) {
+    return this.savingsWithInterest(years) - this.sumTotalInterest(years);
+  }
+
+  savingsWithInterest(years) {
+    return this.totalSavedPrincipal(years) + this.totalSavedPayments(years);
+  }
+
+  listOfYearlySavings(years, calculateSavingsFunc) {
+    let savings = [];
+    for (let i = 0; i <= years; i++) {
+      savings.push(calculateSavingsFunc(i));
     }
-    return savingsEachYearWithoutInterest;
-  };
+    console.log("SAVINGS:", savings);
+    return savings;
+  }
 
   render() {
-    const { inputValues } = this.state;
     return (
       <div className="Main">
         <div className="main-wrapper">
           <Sidebar
-            values={inputValues}
+            inputVals={this.state.inputValues}
             onChange={(i, e) => this.handleChange(i, e)}
           />
           <Graph
-            values={inputValues}
-            savings={this.yearlySavings(inputValues)}
-            withoutInterest={this.yearlySavingsWithoutInterest(inputValues)}
+            inputVals={this.state.inputValues}
+            savings={this.listOfYearlySavings(
+              this.timeInYears,
+              this.savingsWithInterest.bind(this)
+            )}
+            withoutInterest={this.listOfYearlySavings(
+              this.timeInYears,
+              this.savingsWithoutInterest.bind(this)
+            )}
           />
         </div>
         <Totals
-          saved={this.totalSaved(inputValues)}
-          interest={this.totalInterestEarned(inputValues)}
+          saved={this.savingsWithInterest(this.timeInYears)}
+          interest={this.sumTotalInterest(this.timeInYears)}
         />
       </div>
     );

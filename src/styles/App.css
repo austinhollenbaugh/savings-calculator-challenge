@@ -28,7 +28,7 @@ h5 {
   justify-content: space-around;
 }
 
-.CustomerInput {
+.InputWrapper {
   width: 80%;
 }
 
@@ -63,14 +63,10 @@ h5 {
   outline: none;
 }
 
-.chart-wrapper {
-  /* background-color: #282c34; */
-  min-height: 70vh;
+.Graph {
+  height: 70vh;
   width: 70vw;
   position: relative;
-  /* display: flex;
-  align-items: center;
-  justify-content: center; */
 }
 
 .Totals {
