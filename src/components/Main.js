@@ -1,7 +1,10 @@
 import React, { Component } from "react";
+
 import Sidebar from "./Sidebar";
 import Totals from "./Totals";
 import Graph from "./Graph";
+
+import utils from "../utils";
 
 class Main extends Component {
   constructor(props) {
@@ -14,9 +17,6 @@ class Main extends Component {
     this.payment = this.state.inputValues[1];
     this.years = this.state.inputValues[2];
     this.rate = this.state.inputValues[3] / 100;
-
-    this.savingsWithInterest = this.savingsWithInterest.bind(this);
-    this.savingsWithoutInterest = this.savingsWithoutInterest.bind(this);
   }
 
   handleChange(i, e) {
@@ -30,68 +30,13 @@ class Main extends Component {
     this.rate = inputValues[3] / 100;
   }
 
-  amountSavedWithPrincipal(years, rate, prin) {
-    if (rate === 0) return prin;
-
-    return prin * Math.pow(1 + rate / 12, 12 * years);
-  }
-
-  amountSavedWithPayments(years, rate, payment) {
-    if (rate === 0) return payment * (years * 12);
-
-    return (
-      payment *
-      ((Math.pow(1 + rate / 12, 12 * years) - 1) / (rate / 12)) *
-      (1 + rate / 12)
-    );
-  }
-
-  // based off this formula:
-  // [ P(1+r/n)^(nt) ] + [ PMT × (((1 + r/n)^(nt) - 1) / (r/n)) × (1+r/n) ]
-  // from here: https://www.thecalculatorsite.com/articles/finance/compound-interest-formula.php?page=2
-
-  interestEarnedOnPrincipal(years) {
-    return (
-      this.amountSavedWithPrincipal(years, this.rate, this.principal) -
-      this.principal
-    );
-  }
-
-  interestEarnedOnPayments(years) {
-    const months = years * 12;
-    return (
-      this.amountSavedWithPayments(years, this.rate, this.payment) -
-      this.payment * months
-    );
-  }
-
-  interestEarned(years) {
-    return (
-      this.interestEarnedOnPrincipal(years) +
-      this.interestEarnedOnPayments(years)
-    );
-  }
-
-  savingsWithoutInterest(years) {
-    return this.savingsWithInterest(years) - this.interestEarned(years);
-  }
-
-  savingsWithInterest(years) {
-    return (
-      this.amountSavedWithPrincipal(years, this.rate, this.principal) +
-      this.amountSavedWithPayments(years, this.rate, this.payment)
-    );
-  }
-
-  listOfYearlySavings(years, calculateSavingsFunc) {
-    let savings = [];
-    for (let i = 0; i <= years; i++) {
-      savings.push(calculateSavingsFunc(i).toFixed(2));
-    }
-    return savings;
-  }
-
   render() {
+    const {
+      listOfYearlySavingsWithInterest,
+      listOfYearlySavingsWithoutInterest,
+      savingsWithInterest,
+      interestEarned
+    } = utils(this.principal, this.payment, this.years, this.rate);
     return (
       <div className="Main">
         <div className="main-wrapper">
@@ -101,19 +46,13 @@ class Main extends Component {
           />
           <Graph
             inputVals={this.state.inputValues}
-            savings={this.listOfYearlySavings(
-              this.years,
-              this.savingsWithInterest
-            )}
-            withoutInterest={this.listOfYearlySavings(
-              this.years,
-              this.savingsWithoutInterest
-            )}
+            savings={listOfYearlySavingsWithInterest()}
+            withoutInterest={listOfYearlySavingsWithoutInterest()}
           />
         </div>
         <Totals
-          saved={this.savingsWithInterest(this.years)}
-          interest={this.interestEarned(this.years)}
+          saved={savingsWithInterest(this.years)}
+          interest={interestEarned(this.years)}
         />
       </div>
     );
