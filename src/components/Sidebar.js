@@ -2,8 +2,7 @@ import React, { Component } from "react";
 import InputWrapper from "./InputWrapper";
 
 class Sidebar extends Component {
-  renderInputs(values) {
-    // should i move this up and pass it down as props? Or leave it here to get it out of the way?
+  renderInputs(vals) {
     const options = [
       {
         text: "Starting Amount",
@@ -30,7 +29,7 @@ class Sidebar extends Component {
         max: 20
       }
     ];
-    return values.map((val, i) => {
+    return vals.map((val, i) => {
       return (
         <InputWrapper
           val={val}
