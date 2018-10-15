@@ -15,7 +15,6 @@ class Main extends Component {
     this.years = this.state.inputValues[2];
     this.rate = this.state.inputValues[3] / 100;
 
-    this.amountSavedWithPrincipal = this.amountSavedWithPrincipal.bind(this);
     this.savingsWithInterest = this.savingsWithInterest.bind(this);
     this.savingsWithoutInterest = this.savingsWithoutInterest.bind(this);
   }
@@ -40,15 +39,22 @@ class Main extends Component {
   amountSavedWithPayments(years, rate, payment) {
     if (rate === 0) return payment * (years * 12);
 
-    return payment * ((Math.pow(1 + rate / 12, 12 * years) - 1) / (rate / 12));
+    return (
+      payment *
+      ((Math.pow(1 + rate / 12, 12 * years) - 1) / (rate / 12)) *
+      (1 + rate / 12)
+    );
   }
 
   // based off this formula:
-  // [ P(1+r/n)^(nt) ] + [ PMT × (((1 + r/n)^(nt) - 1) / (r/n)) ]
-  // https://www.thecalculatorsite.com/articles/finance/compound-interest-formula.php?page=2
+  // [ P(1+r/n)^(nt) ] + [ PMT × (((1 + r/n)^(nt) - 1) / (r/n)) × (1+r/n) ]
+  // from here: https://www.thecalculatorsite.com/articles/finance/compound-interest-formula.php?page=2
 
   interestEarnedOnPrincipal(years) {
-    return this.amountSavedWithPrincipal(years) - this.principal;
+    return (
+      this.amountSavedWithPrincipal(years, this.rate, this.principal) -
+      this.principal
+    );
   }
 
   interestEarnedOnPayments(years) {
@@ -72,7 +78,8 @@ class Main extends Component {
 
   savingsWithInterest(years) {
     return (
-      this.amountSavedWithPrincipal(years) + this.amountSavedWithPayments(years)
+      this.amountSavedWithPrincipal(years, this.rate, this.principal) +
+      this.amountSavedWithPayments(years, this.rate, this.payment)
     );
   }
 
@@ -95,18 +102,18 @@ class Main extends Component {
           <Graph
             inputVals={this.state.inputValues}
             savings={this.listOfYearlySavings(
-              this.timeInYears,
+              this.years,
               this.savingsWithInterest
             )}
             withoutInterest={this.listOfYearlySavings(
-              this.timeInYears,
+              this.years,
               this.savingsWithoutInterest
             )}
           />
         </div>
         <Totals
-          saved={this.savingsWithInterest(this.timeInYears)}
-          interest={this.interestEarned(this.timeInYears)}
+          saved={this.savingsWithInterest(this.years)}
+          interest={this.interestEarned(this.years)}
         />
       </div>
     );

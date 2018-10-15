@@ -26,7 +26,7 @@ class Sidebar extends Component {
         text: "Interest Rate",
         type: "%",
         min: 0,
-        max: 20
+        max: 10
       }
     ];
     return vals.map((val, i) => {

@@ -2,9 +2,7 @@ import Main from "../components/Main";
 const {
   amountSavedWithPayments,
   amountSavedWithPrincipal,
-  listOfYearlySavings,
-  savingsWithInterest,
-  savingsWithoutInterest
+  listOfYearlySavings
 } = Main.prototype;
 
 describe("Main component", () => {
@@ -23,11 +21,10 @@ describe("Main component", () => {
 
   it("correctly calculates amount saved with monthly payments and no principal", () => {
     expect(amountSavedWithPayments(years, rate, payment)).toEqual(
-      13601.216568168675
+      13657.888303869377
     );
-    // i'm also getting a 13657 amount?
-    // some sites are doing an effective rate of 5.12% instead?
-    // https://financialmentor.com/calculator/compound-interest-calculator
+    // some calculators use a formula depending on the deposits being made at the beginning of the period, and some at the end, which results in calculators giving different answers.
+    // the most common result seemed to be using the formula for deposits made at the beginning of the period, so I went with that one.
   });
 
   it("correctly calculates amount saved with principal and no monthly payments", () => {
